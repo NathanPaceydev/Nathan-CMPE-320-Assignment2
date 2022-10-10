@@ -27,7 +27,6 @@ private:
 	
 	const int GCD(const int& n, const int& m);
 	void inverse_negative(int& numer_attribute, int& denom_attribute);
-	void operation(int& num, int& denom, const Fraction& lhs, const Fraction& rhs, const char& opt_string);
 
 public:
 	//Fraction(int numerator = 0, int denominator = 1);
@@ -42,6 +41,13 @@ public:
 
 
 
+
+	//int operation_func(const int x, const int y, const int casevar);
+
+	//array<int,2> operation_func(const int lhs_num, const int rhs_denom, const int rhs_num, const int lhs_denom, const int casevar);
+
+	array<int, 2> operation_func(const int lhs_num, const int rhs_denom, const int rhs_num, const int lhs_denom, const int casevar, const bool mul);
+
 	Fraction& operator-();
 	// Member Binary Operator (potential mixed type expression)
 	// Just wanted to try it out as a member function instead of non-member
@@ -51,22 +57,24 @@ public:
 	friend ostream& operator<<(ostream& out, const Fraction& fraction);
 	friend istream& operator>>(istream& in, Fraction& fraction);
 
+	// Non-member Binary Operators
+	friend Fraction operator+(const Fraction& lhs, const Fraction& rhs);
+	friend Fraction operator-(const Fraction& lhs, const Fraction& rhs);
+	friend Fraction operator*(const Fraction& lhs, const Fraction& rhs);
+	friend Fraction operator/(const Fraction& lhs, const Fraction& rhs);
+
+	// Non-member Comparative Operators (better for mixed type expressions)
+	// Could compare a fraction with an int
+	friend bool operator==(const Fraction& rhs, const Fraction& lhs);
+	friend bool operator>(const Fraction& lhs, const Fraction& rhs);
+	friend bool operator>=(const Fraction& lhs, const Fraction& rhs);
+	friend bool operator<(const Fraction& lhs, const Fraction& rhs);
+	friend bool operator<=(const Fraction& lhs, const Fraction& rhs);
+	friend bool operator!=(const Fraction& lhs, const Fraction& rhs);
+
 };
 
-// Non-member Binary Operators
-Fraction operator+(const Fraction& lhs, const Fraction& rhs);
-Fraction operator-(const Fraction& lhs, const Fraction& rhs);
-Fraction operator*(const Fraction& lhs, const Fraction& rhs);
-Fraction operator/(const Fraction& lhs, const Fraction& rhs);
 
-// Non-member Comparative Operators (better for mixed type expressions)
-// Could compare a fraction with an int
-bool operator==(const Fraction& rhs, const Fraction& lhs);
-bool operator>(const Fraction& lhs, const Fraction& rhs);
-bool operator>=(const Fraction& lhs, const Fraction& rhs);
-bool operator<(const Fraction& lhs, const Fraction& rhs);
-bool operator<=(const Fraction& lhs, const Fraction& rhs);
-bool operator!=(const Fraction& lhs, const Fraction& rhs);
 
 
 
