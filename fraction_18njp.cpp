@@ -12,45 +12,37 @@
 using namespace std;
 
 
-
+// ###################### 0 DIVIDE ERROR MESSAGE ###################################################
 FractionException::FractionException(const string& fractionExceptionString) : fractionExceptionString(fractionExceptionString) {}
 string &FractionException::what() { 
 	return fractionExceptionString;
 }
 
 
+// ####################### FRACTION CLASS ATTRIBUTES AND METHODS #################################
 
 const int& Fraction::numerator() const {
 	return numer_attribute;
 }
 
-
 const int& Fraction::denominator() const {
 	return denom_attribute;
 }
-
 
 Fraction::Fraction(int numer,int denom) {
 	if (denom == 0)
 		throw FractionException("Zero value denominator Error:\n Cannot divide by 0!!");
 
-	int gcd = GCD(numer, denom);
-	numer_attribute = numer/gcd;
-	denom_attribute = denom/gcd;
-
-	inverse_negative(numer_attribute, denom_attribute);
+	reduce(numer, denom, numer_attribute, denom_attribute);
 }
 
+// function to use GCD and inverse to normalize the fraction
+void Fraction::reduce(int &numer, int &denom,int& numer_attribute, int& denom_attribute) {
+	int gcd = GCD(numer, denom);
+	numer_attribute = numer / gcd;
+	denom_attribute = denom / gcd;
 
-void Fraction::inverse_negative(int &numer_attribute, int &denom_attribute) {
-	if (numer_attribute * denom_attribute < 0) {
-		numer_attribute = -abs(numer_attribute);
-		denom_attribute = abs(denom_attribute);
-	}
-	else {
-		numer_attribute = abs(numer_attribute);
-		denom_attribute = abs(denom_attribute);
-	}
+	inverse_negative(numer_attribute, denom_attribute);
 }
 
 
@@ -64,6 +56,17 @@ const int Fraction::GCD(const int& x, const int& y) {
 	return GCD(y, x % y);
 }
 
+
+void Fraction::inverse_negative(int &numer_attribute, int &denom_attribute) {
+	if (numer_attribute * denom_attribute < 0) {
+		numer_attribute = -abs(numer_attribute);
+		denom_attribute = abs(denom_attribute);
+	}
+	else {
+		numer_attribute = abs(numer_attribute);
+		denom_attribute = abs(denom_attribute);
+	}
+}
 
 
 
@@ -160,8 +163,6 @@ Fraction& Fraction::operator-() {
 }
 
 
-
-
 Fraction Fraction::operator++(int unused) {
 	Fraction frac;
 	frac.numer_attribute = numer_attribute;
@@ -175,60 +176,64 @@ Fraction& Fraction::operator++() {
 	return *this;
 }
 
+
+
 Fraction& Fraction::operator+=(const Fraction& right) {
 	numer_attribute = (numer_attribute * right.denom_attribute) + (right.numer_attribute * denom_attribute);
 	denom_attribute = denom_attribute * right.denom_attribute;
 
-	
-	int divisor = GCD(numer_attribute, denom_attribute);
-	numer_attribute /= divisor;
-	denom_attribute /= divisor;
-	inverse_negative(numer_attribute, denom_attribute);
-
+	reduce(numer_attribute, denom_attribute, numer_attribute, denom_attribute);
 	return *this;
 }
 
+const bool comparison(const int lhs_num, const int rhs_denom, const int rhs_num, const int lhs_denom, const int casevar) {
+	// {0:== or !0:!=, 1:> or !1:<=, 2:< or !2:>=}
 
+	switch (casevar) {
+	case(0): // true for ==. !true for !=
+		return (lhs_num * rhs_denom == lhs_denom * rhs_num);
+		break;
+	case(1): //true for >, !true for <=
+		return (lhs_num * rhs_denom > lhs_denom * rhs_num);
+		break;
+	case(2):// true for <, !true fpr >=
+		return (lhs_num * rhs_denom < lhs_denom * rhs_num);
+		break;
+	}
 
+}
+
+//call the comparison method with the equality case 0
 bool operator==(const Fraction& lhs, const Fraction& rhs) {
-	if (lhs.numerator() * rhs.denominator() == lhs.denominator() * rhs.numerator())
-		return true;
-
-	return false;
+	return comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 0);
 }
 
-bool operator<(const Fraction& lhs, const Fraction& rhs) {
-	if (lhs.numerator() * rhs.denominator() < lhs.denominator() * rhs.numerator())
-		return true;
-
-	return false;
-}
-
-bool operator>(const Fraction& lhs, const Fraction& rhs) {
-	if (lhs.numerator() * rhs.denominator() > lhs.denominator() * rhs.numerator())
-		return true;
-	
-	return false;
-}
-
-bool operator<=(const Fraction& lhs, const Fraction& rhs) {
-	if (lhs.numerator() * rhs.denominator() <= lhs.denominator() * rhs.numerator())
-		return true;
-
-	return false;
-}
-
-
-bool operator>=(const Fraction& lhs, const Fraction& rhs) {
-	if (lhs.numerator() * rhs.denominator() >= lhs.denominator() * rhs.numerator())
-		return true;
-
-	return false;
-}
-
+//call the comparison method with the !equality case 0
 bool operator!=(const Fraction& lhs, const Fraction& rhs) {
-	if (lhs.numerator() * rhs.denominator() != lhs.denominator() * rhs.numerator())
-		return true;
-
-	return false;
+	return !comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 0);
 }
+
+//call the comparison method with the greater than case 1
+bool operator>(const Fraction& lhs, const Fraction& rhs) {
+	return comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 1);
+}
+
+//call the comparison method with the !greater than case 1
+bool operator<=(const Fraction& lhs, const Fraction& rhs) {
+	return !comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 1);
+}
+
+//call the comparison method with the less than case 2
+bool operator<(const Fraction& lhs, const Fraction& rhs) {
+	return comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 2);
+}
+
+//call the comparison method with the !less than case 2
+bool operator>=(const Fraction& lhs, const Fraction& rhs) {
+	return !comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 2);
+
+}
+
+
+
+

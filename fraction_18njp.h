@@ -27,6 +27,7 @@ private:
 	
 	const int GCD(const int& n, const int& m);
 	void inverse_negative(int& numer_attribute, int& denom_attribute);
+	void reduce(int& numer, int& denom, int& numer_attribute, int& denom_attribute);
 
 public:
 	//Fraction(int numerator = 0, int denominator = 1);
@@ -37,16 +38,6 @@ public:
 	// Member Unary operators (no mixed type expressions)
 	Fraction operator++(int);
 	Fraction& operator++();
-	
-
-
-
-
-	//int operation_func(const int x, const int y, const int casevar);
-
-	//array<int,2> operation_func(const int lhs_num, const int rhs_denom, const int rhs_num, const int lhs_denom, const int casevar);
-
-	array<int, 2> operation_func(const int lhs_num, const int rhs_denom, const int rhs_num, const int lhs_denom, const int casevar, const bool mul);
 
 	Fraction& operator-();
 	// Member Binary Operator (potential mixed type expression)
