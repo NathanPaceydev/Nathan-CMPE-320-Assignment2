@@ -20,14 +20,14 @@ public:
 
 
 class Fraction {
-	int numer_attribute;
+	int numerator_attribute;
 	int denom_attribute;
 private:
 
 	
 	const int GCD(const int& n, const int& m);
-	void inverse_negative(int& numer_attribute, int& denom_attribute);
-	void reduce(int& numer, int& denom, int& numer_attribute, int& denom_attribute);
+	void inverse_negative(int& numerator_attribute, int& denom_attribute);
+	void reduce(int& numerator, int& denom, int& numerator_attribute, int& denom_attribute);
 
 public:
 	//Fraction(int numerator = 0, int denominator = 1);
@@ -36,32 +36,32 @@ public:
 	const int& numerator() const;
 	const int& denominator() const;
 	// Member Unary operators (no mixed type expressions)
-	Fraction operator++(int);
+	Fraction operator++(int old_value);
 	Fraction& operator++();
 
 	Fraction& operator-();
 	// Member Binary Operator (potential mixed type expression)
-	// Just wanted to try it out as a member function instead of non-member
-	Fraction& operator+=(const Fraction& right);
+	// Just wanted to try it output as a member function instead of non-member
+	Fraction& operator+=(const Fraction& original);
 
 	// I/O Operators
-	friend ostream& operator<<(ostream& out, const Fraction& fraction);
+	friend ostream& operator<<(ostream& output, const Fraction& fraction);
 	friend istream& operator>>(istream& in, Fraction& fraction);
 
 	// Non-member Binary Operators
-	friend Fraction operator+(const Fraction& lhs, const Fraction& rhs);
-	friend Fraction operator-(const Fraction& lhs, const Fraction& rhs);
-	friend Fraction operator*(const Fraction& lhs, const Fraction& rhs);
-	friend Fraction operator/(const Fraction& lhs, const Fraction& rhs);
+	friend Fraction operator+(const Fraction& old_frac, const Fraction& new_frac);
+	friend Fraction operator-(const Fraction& old_frac, const Fraction& new_frac);
+	friend Fraction operator*(const Fraction& old_frac, const Fraction& new_frac);
+	friend Fraction operator/(const Fraction& old_frac, const Fraction& new_frac);
 
 	// Non-member Comparative Operators (better for mixed type expressions)
 	// Could compare a fraction with an int
-	friend bool operator==(const Fraction& rhs, const Fraction& lhs);
-	friend bool operator>(const Fraction& lhs, const Fraction& rhs);
-	friend bool operator>=(const Fraction& lhs, const Fraction& rhs);
-	friend bool operator<(const Fraction& lhs, const Fraction& rhs);
-	friend bool operator<=(const Fraction& lhs, const Fraction& rhs);
-	friend bool operator!=(const Fraction& lhs, const Fraction& rhs);
+	friend bool operator==(const Fraction& old_frac, const Fraction& new_frac);
+	friend bool operator>(const Fraction& old_frac, const Fraction& new_frac);
+	friend bool operator>=(const Fraction& old_frac, const Fraction& new_frac);
+	friend bool operator<(const Fraction& old_frac, const Fraction& new_frac);
+	friend bool operator<=(const Fraction& old_frac, const Fraction& new_frac);
+	friend bool operator!=(const Fraction& old_frac, const Fraction& new_frac);
 
 };
 

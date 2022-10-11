@@ -12,42 +12,43 @@
 using namespace std;
 
 
-// ###################### 0 DIVIDE ERROR MESSAGE ###################################################
+//###################### 0 DIVIDE ERROR MESSAGE ###################################################
 FractionException::FractionException(const string& fractionExceptionString) : fractionExceptionString(fractionExceptionString) {}
 string &FractionException::what() { 
 	return fractionExceptionString;
 }
 
 
-// ####################### FRACTION CLASS ATTRIBUTES AND METHODS #################################
-
-const int& Fraction::numerator() const {
-	return numer_attribute;
+//####################### FRACTION CLASS ATTRIBUTES AND METHODS #################################
+//numerator attribute
+const int& Fraction::numerator()const{
+	return numerator_attribute;
 }
 
-const int& Fraction::denominator() const {
+//denominator attribute
+const int& Fraction::denominator()const{
 	return denom_attribute;
 }
 
-Fraction::Fraction(int numer,int denom) {
+// fraction class implementation
+Fraction::Fraction(int numerator, int denom){
 	if (denom == 0)
 		throw FractionException("Zero value denominator Error:\n Cannot divide by 0!!");
 
-	reduce(numer, denom, numer_attribute, denom_attribute);
+	reduce(numerator, denom, numerator_attribute, denom_attribute);
 }
 
-// function to use GCD and inverse to normalize the fraction
-void Fraction::reduce(int &numer, int &denom,int& numer_attribute, int& denom_attribute) {
-	int gcd = GCD(numer, denom);
-	numer_attribute = numer / gcd;
+// method to use GCD and inverse to normalize the fraction
+void Fraction::reduce(int &numerator, int &denom, int &numerator_attribute, int &denom_attribute){
+	int gcd = GCD(numerator, denom);
+	numerator_attribute = numerator/ gcd;
 	denom_attribute = denom / gcd;
 
-	inverse_negative(numer_attribute, denom_attribute);
+	inverse_negative(numerator_attribute, denom_attribute);
 }
 
-
 // recursive method to calculate the greatest common denominator of ints a and y
-const int Fraction::GCD(const int& x, const int& y) {
+const int Fraction::GCD(const int &x, const int &y){
 	if (x == 0)
 		return 1;
 	if (y == 0)
@@ -56,75 +57,69 @@ const int Fraction::GCD(const int& x, const int& y) {
 	return GCD(y, x % y);
 }
 
-
-void Fraction::inverse_negative(int &numer_attribute, int &denom_attribute) {
-	if (numer_attribute * denom_attribute < 0) {
-		numer_attribute = -abs(numer_attribute);
+// method to normalize the negative in a fraction
+void Fraction::inverse_negative(int &numerator_attribute, int &denom_attribute){
+	if (numerator_attribute * denom_attribute < 0){
+		numerator_attribute = -abs(numerator_attribute);
 		denom_attribute = abs(denom_attribute);
 	}
 	else {
-		numer_attribute = abs(numer_attribute);
+		numerator_attribute = abs(numerator_attribute);
 		denom_attribute = abs(denom_attribute);
 	}
 }
 
 
 
-// ** OVERLOADING OPERATORS ************************
-//TODO figure out a decent way to organize this section
+//################## Overloading Operators ########################
 
-ostream& operator<<(ostream& out, const Fraction& fraction) {
-	out << fraction.numer_attribute << "/" << fraction.denom_attribute;
-	return out;
+//****************** Unary Operators **************************
+// negation operator overloading
+Fraction& Fraction::operator-() { 
+	numerator_attribute = -numerator_attribute;
+	return *this;
 }
 
-
-
-istream& operator>>(istream& in, Fraction& fraction)
-{
-	// read numerator
-	in >> fraction.numer_attribute;
-	// read next character
-	int current = in.get();
-	 // note if no '/' is inputted current = 10
-
-	if (fraction.numer_attribute == 0 || current == 10) {
-		fraction.denom_attribute = 1;
-		return in;
-	}
-	// else 
-	in >> fraction.denom_attribute;
-	return in;
+// post-increment operator overloading
+Fraction Fraction::operator++(int old_value) {
+	Fraction frac;
+	frac.numerator_attribute = numerator_attribute;
+	frac.denom_attribute = denom_attribute;
+	numerator_attribute += denom_attribute;
+	return frac;
 }
 
-//**********************************
-// operators to be optimized !!!!!
+// pre-increment operator overloading
+Fraction& Fraction::operator++() { 
+	numerator_attribute += denom_attribute;
+	return *this;
+}
 
-//functions to maybe simplify this garbage idk!!!
-vector<int> operation_func(const int lhs_num, const int rhs_denom, const int rhs_num, const int lhs_denom, const int casevar) {
+//***************** Basic Binary Operators *******************
+// method that populates the fraction_arr based on the arthimatic operator sent
+vector<int> operation_func(const int old_numer, const int new_denom, const int new_numer, const int old_denom, const int casevar){
 	vector<int> fraction_arr;
+
 	//case var {0:add, 1:subtract, 2:mul, 3:divide}
-
 	switch (casevar) {
-
 		case 0://adding
-			fraction_arr.push_back((lhs_num * rhs_denom) + (rhs_num * lhs_denom));//numerator
-			fraction_arr.push_back(lhs_denom * rhs_denom); //denominator
+			fraction_arr.push_back((old_numer * new_denom) + (new_numer * old_denom));//numerator
+			fraction_arr.push_back(old_denom * new_denom); //denominator
 			break;
 
 		case 1://subtracting
-			fraction_arr.push_back((lhs_num * rhs_denom) - (rhs_num * lhs_denom));//numerator
-			fraction_arr.push_back(lhs_denom * rhs_denom); //denominator
+			fraction_arr.push_back((old_numer * new_denom) - (new_numer * old_denom));//numerator
+			fraction_arr.push_back(old_denom * new_denom); //denominator
 			break;
 
 		case 2://multiply
-			fraction_arr.push_back(lhs_num * rhs_num);//numerator
-			fraction_arr.push_back(lhs_denom * rhs_denom); //denominator
+			fraction_arr.push_back(old_numer * new_numer);//numerator
+			fraction_arr.push_back(old_denom * new_denom); //denominator
 			break;
 
 		case 3: //divide
-			fraction_arr.push_back(lhs_num * rhs_denom);//numerator
-			fraction_arr.push_back(lhs_denom * rhs_num); //denominator
+			fraction_arr.push_back(old_numer * new_denom);//numerator
+			fraction_arr.push_back(old_denom * new_numer); //denominator
 			break;
 
 	}
@@ -134,106 +129,123 @@ vector<int> operation_func(const int lhs_num, const int rhs_denom, const int rhs
 	
 }
 
-
-Fraction operator+(const Fraction& lhs, const Fraction& rhs) {
-	vector<int> add_arr =(operation_func(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 0));
+// addition operator overloading
+Fraction operator+(const Fraction& old_frac, const Fraction& new_frac){
+	// calls the operation_func with casevar = 0
+	vector<int> add_arr =(operation_func(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 0));
 	return Fraction(add_arr[0], add_arr[1]);
 }
 
-Fraction operator-(const Fraction& lhs, const Fraction& rhs) {
-	vector<int> sub_arr = (operation_func(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 1));
+// subtraction operator overloading
+Fraction operator-(const Fraction& old_frac, const Fraction& new_frac){
+	// calls the operation_func with casevar = 1
+	vector<int> sub_arr = (operation_func(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 1));
 	return Fraction(sub_arr[0], sub_arr[1]);
 }
 
-Fraction operator*(const Fraction& lhs, const Fraction& rhs) {
-	vector<int> mul_arr = (operation_func(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 2));
+// mul operator overloading
+Fraction operator*(const Fraction& old_frac, const Fraction& new_frac){
+	// calls the operation_func with casevar = 2
+	vector<int> mul_arr = (operation_func(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 2));
 	return Fraction(mul_arr[0], mul_arr[1]);
 }
 
-Fraction operator/(const Fraction& lhs, const Fraction& rhs) {
-	vector<int> div_arr = (operation_func(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 3));
+// div operator overloading
+Fraction operator/(const Fraction& old_frac, const Fraction& new_frac){
+	// calls the operation_func with casevar = 3
+	vector<int> div_arr = (operation_func(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 3));
 	return Fraction(div_arr[0], div_arr[1]);
 }
 
+// addition and assignment operator overloading
+Fraction& Fraction::operator+=(const Fraction& original) {
+	numerator_attribute = (numerator_attribute * original.denom_attribute) + (original.numerator_attribute * denom_attribute);
+	denom_attribute = denom_attribute * original.denom_attribute;
 
-
-Fraction& Fraction::operator-() {
-	numer_attribute = -numer_attribute;
+	reduce(numerator_attribute, denom_attribute, numerator_attribute, denom_attribute);
 	return *this;
 }
 
 
-Fraction Fraction::operator++(int unused) {
-	Fraction frac;
-	frac.numer_attribute = numer_attribute;
-	frac.denom_attribute = denom_attribute;
-	numer_attribute += denom_attribute;
-	return frac;
-}
-
-Fraction& Fraction::operator++() {
-	numer_attribute = numer_attribute + denom_attribute;
-	return *this;
-}
-
-
-
-Fraction& Fraction::operator+=(const Fraction& right) {
-	numer_attribute = (numer_attribute * right.denom_attribute) + (right.numer_attribute * denom_attribute);
-	denom_attribute = denom_attribute * right.denom_attribute;
-
-	reduce(numer_attribute, denom_attribute, numer_attribute, denom_attribute);
-	return *this;
-}
-
-const bool comparison(const int lhs_num, const int rhs_denom, const int rhs_num, const int lhs_denom, const int casevar) {
+// ***************** Comparison Operators ************************
+/* Method that retruns the overloaded definition of an opererator for the fraction
+after being supplied an int representaton of that operator */
+const bool comparison(const int old_numer, const int new_denom, const int new_numer, const int old_denom, const int casevar) {
 	// {0:== or !0:!=, 1:> or !1:<=, 2:< or !2:>=}
-
 	switch (casevar) {
 	case(0): // true for ==. !true for !=
-		return (lhs_num * rhs_denom == lhs_denom * rhs_num);
+		return (old_numer * new_denom == old_denom * new_numer);
 		break;
 	case(1): //true for >, !true for <=
-		return (lhs_num * rhs_denom > lhs_denom * rhs_num);
+		return (old_numer * new_denom > old_denom * new_numer);
 		break;
 	case(2):// true for <, !true fpr >=
-		return (lhs_num * rhs_denom < lhs_denom * rhs_num);
+		return (old_numer * new_denom < old_denom * new_numer);
 		break;
 	}
 
 }
 
-//call the comparison method with the equality case 0
-bool operator==(const Fraction& lhs, const Fraction& rhs) {
-	return comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 0);
+
+// == operator overloading
+bool operator==(const Fraction& old_frac, const Fraction& new_frac){
+	// call the comparison method with the equality case 0
+	return comparison(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 0);
 }
 
-//call the comparison method with the !equality case 0
-bool operator!=(const Fraction& lhs, const Fraction& rhs) {
-	return !comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 0);
+// != operator overloading
+bool operator!=(const Fraction& old_frac, const Fraction& new_frac){
+	// call the comparison method with the !equality case 0
+	return !comparison(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 0);
 }
 
-//call the comparison method with the greater than case 1
-bool operator>(const Fraction& lhs, const Fraction& rhs) {
-	return comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 1);
+// > operator overloading
+bool operator>(const Fraction& old_frac, const Fraction& new_frac){
+	// call the comparison method with the greater than case 1
+	return comparison(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 1);
 }
 
-//call the comparison method with the !greater than case 1
-bool operator<=(const Fraction& lhs, const Fraction& rhs) {
-	return !comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 1);
+// <= operator overloading
+bool operator<=(const Fraction& old_frac, const Fraction& new_frac){
+	// call the comparison method with the !greater than case 1
+	return !comparison(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 1);
 }
 
-//call the comparison method with the less than case 2
-bool operator<(const Fraction& lhs, const Fraction& rhs) {
-	return comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 2);
+// < operator overloading
+bool operator<(const Fraction& old_frac, const Fraction& new_frac){
+	// call the comparison method with the less than case 2
+	return comparison(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 2);
 }
 
-//call the comparison method with the !less than case 2
-bool operator>=(const Fraction& lhs, const Fraction& rhs) {
-	return !comparison(lhs.numerator(), rhs.denominator(), rhs.numerator(), lhs.denominator(), 2);
-
+// >= operator overloading
+bool operator>=(const Fraction& old_frac, const Fraction& new_frac){
+	// call the comparison method with the !less than case 2
+	return !comparison(old_frac.numerator(), new_frac.denominator(), new_frac.numerator(), old_frac.denominator(), 2);
 }
 
 
+// ***************** Stream Operators *********************
+// output operator overloading
+ostream& operator<<(ostream& output, const Fraction& output_frac) {
+	output << output_frac.numerator_attribute << "/" << output_frac.denom_attribute;
+	return output;
+}
 
+// input operator overloading
+istream& operator>>(istream& input, Fraction& input_frac) {
+	input >> input_frac.numerator_attribute; //read input the numerator
+
+	int current = input.get(); // note if no '/' is inputputted current = 10
+
+	// if the numerator is 0 or a whole number set denom_attribute to 1
+	if (current == 10 || input_frac.numerator_attribute == 0) {
+		input_frac.denom_attribute = 1;
+		return input;
+	}
+	else {
+		// otherwise read the denom
+		input >> input_frac.denom_attribute;
+		return input;
+	}
+}
 
