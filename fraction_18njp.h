@@ -9,24 +9,28 @@
 #include <iostream>
 using namespace std;
 
-
+// Class to throw an exception when the user divides by 0
 class FractionException : public exception{
 private:
-	string fractionExceptionString;
+	string fractionExceptionString; // error message
 
 public:
 	FractionException(const string &fractionExceptionString);
 	string &what();
 };
 
-
+// Class that defines the fraction objects
+// note that more detailed comments were put in the .cpp file
 class Fraction {
 	int numerator_attribute;
 	int denom_attribute;
 
 private:
-	const int GCD(const int &x, const int &y);
+	// method to find GCD of 2 ints
+	const int GCD(const int &x, const int &y); 
+	// method to normalize the negative in a fraction
 	void inverse_negative(int &numerator_attribute, int &denom_attribute);
+	// method to redce any given fraction using the other methods
 	void reduce(int &numerator, int &denom, int &numerator_attribute, int &denom_attribute);
 
 public:

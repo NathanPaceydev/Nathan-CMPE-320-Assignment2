@@ -70,7 +70,6 @@ void Fraction::inverse_negative(int &numerator_attribute, int &denom_attribute){
 }
 
 
-
 //################## Overloading Operators ########################
 
 //****************** Unary Operators **************************
@@ -188,7 +187,6 @@ const bool comparison(const int &old_numer, const int &new_denom, const int &new
 	}
 
 }
-
 
 // == operator overloading
 bool operator==(const Fraction &old_frac, const Fraction &new_frac){
