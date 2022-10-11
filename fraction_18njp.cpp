@@ -1,4 +1,5 @@
 /* Assignment 2 - The Fraction Class
+ * 
  * Implementation file: fraction_18njp.cpp
  * Student: Nathan Pacey	netid:18njp		Student Number:20153310		Class: CMPE320
  */
@@ -13,19 +14,18 @@ using namespace std;
 
 
 //###################### 0 DIVIDE ERROR MESSAGE ###################################################
-FractionException::FractionException(const string& fractionExceptionString) : fractionExceptionString(fractionExceptionString) {}
+FractionException::FractionException(const string &fractionExceptionString) : fractionExceptionString(fractionExceptionString) {}
 string &FractionException::what() { 
 	return fractionExceptionString;
 }
 
 
-//####################### FRACTION CLASS ATTRIBUTES AND METHODS #################################
-// numerator attribute
+//####################### FRACTION CLASS ACCESSORS AND METHODS #################################
+
 const int& Fraction::numerator()const{
 	return numerator_attribute;
 }
 
-// denominator attribute
 const int& Fraction::denominator()const{
 	return denom_attribute;
 }
@@ -98,7 +98,7 @@ Fraction& Fraction::operator++() {
 	return *this;
 }
 
-//***************** Basic Binary Operators *******************
+//***************** Non-Member Binary Operators *******************
 // method that populates the fraction_arr based on the arthimatic operator sent
 vector<int> operation_func(const int &old_numer, const int &new_denom, const int &new_numer, const int &old_denom, const int &casevar){
 	vector<int> fraction_arr;
@@ -161,8 +161,8 @@ Fraction operator/(const Fraction &old_frac, const Fraction &new_frac){
 // addition and assignment operator overloading
 Fraction& Fraction::operator+=(const Fraction &new_fraction) {
 	// add the new fraction to the numerator and denominator
-	numerator_attribute = (numerator_attribute * new_fraction.denom_attribute) + (new_fraction.numerator_attribute * denom_attribute);
-	denom_attribute = denom_attribute * new_fraction.denom_attribute;
+	numerator_attribute = (numerator_attribute * new_fraction.denominator()) + (new_fraction.numerator() * denom_attribute);
+	denom_attribute = denom_attribute * new_fraction.denominator();
 
 	// call the reduce() method to reduce & normalize the new fraction
 	reduce(numerator_attribute, denom_attribute, numerator_attribute, denom_attribute);
