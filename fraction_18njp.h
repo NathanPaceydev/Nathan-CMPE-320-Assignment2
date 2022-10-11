@@ -42,7 +42,7 @@ public:
 	Fraction& operator-();
 	// Member Binary Operator (potential mixed type expression)
 	// Just wanted to try it output as a member function instead of non-member
-	Fraction& operator+=(const Fraction& original);
+	Fraction& operator+=(const Fraction& new_fraction);
 
 	// I/O Operators
 	friend ostream& operator<<(ostream& output, const Fraction& fraction);
