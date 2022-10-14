@@ -46,15 +46,9 @@ public:
 	Fraction operator++(int old_value);
 	Fraction& operator++();
 
-	// Basic Binary arithmatic operators
-	friend Fraction operator+(const Fraction &old_frac, const Fraction &new_frac);
-	friend Fraction operator-(const Fraction &old_frac, const Fraction &new_frac);
-	friend Fraction operator*(const Fraction &old_frac, const Fraction &new_frac);
-	friend Fraction operator/(const Fraction &old_frac, const Fraction &new_frac);
-	
-	
 	// Addition and Assignment operator
-	Fraction& operator+=(const Fraction &new_fraction);
+	Fraction& operator+=(const Fraction& new_fraction);
+	
 
 	// Comparison Operators
 	friend bool operator==(const Fraction &old_frac, const Fraction &new_frac);
@@ -71,3 +65,12 @@ public:
 	friend ostream& operator<<(ostream &output, const Fraction &fraction);
 	friend istream& operator>>(istream &in, Fraction &fraction);
 };
+
+
+// Basic Binary arithmatic operators   - note that these do not need to be implemented as member friends
+Fraction operator+(const Fraction& old_frac, const Fraction& new_frac);
+Fraction operator-(const Fraction& old_frac, const Fraction& new_frac);
+Fraction operator*(const Fraction& old_frac, const Fraction& new_frac);
+Fraction operator/(const Fraction& old_frac, const Fraction& new_frac);
+
+
